@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+import math
 cap = cv2.VideoCapture(0)
 
 def nothing(x):
@@ -27,6 +27,10 @@ cv2.createTrackbar('fourththreshHoldMin','control',0,255,nothing)
 cv2.createTrackbar('fourththreshHoldMax','control',0,255,nothing)
 cv2.setTrackbarPos('fourththreshHoldMin', 'control', 100)
 cv2.setTrackbarPos('fourththreshHoldMax', 'control', 255)
+
+#
+# TODO: Find a fix for global variable 'previousLastNumber'
+#
 previousLastNumber = 0
 while(True):
     ret, frame = cap.read()
@@ -91,14 +95,27 @@ while(True):
         #
         lastNumber = 0
         for index,x in enumerate(array):
-            cv2.imshow(str(index), croppedFrame[x[1]:x[1]+x[3], x[0]:x[0]+x[2]])
+            temporaryFrame = croppedFrame[x[1]:x[1]+x[3], x[0]:x[0]+x[2]]
+            cannyFrame = cv2.Canny(temporaryFrame,0,255)
             lastNumber = index
 
-            # TODO: Fix crash on houghlines
-            # lines = cv2.HoughLinesP(test, 1, np.pi / 180, 30, maxLineGap=250)
-            # for line in lines:
-            #     x1, y1, x2, y2 = line[0]
-            #     cv2.line(croppedFrame, (x1, y1), (x2, y2), (0, 0, 128), 1)
+            # edged = cv2.cvtColor(temporaryFrame, cv2.COLOR_BGR2GRAY)
+            # print(type(temporaryFrame))
+            # temporaryFrame = np.CV_8UC1(temporaryFrame)
+            lines = cv2.HoughLinesP(cannyFrame, 1, np.pi / 180, 10, minLineLength=5, maxLineGap=1)
+            if lines is not None:
+                amountofLines = 0
+                print('Image: ',index)
+                for idx,line in enumerate(lines):
+                    amountofLines = idx
+                    x1, y1, x2, y2 = line[0]
+                    angle = math.atan2(y1 - y2, x1 - x2)
+                    angle = angle * 180 / math.pi
+                    print(angle)
+                    cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                print('Total amount of lines:',amountofLines)
+            cv2.imshow(str(index), temporaryFrame)
+
 
         #
         # Removing the remaining windows (falsely detected or smaller word)
