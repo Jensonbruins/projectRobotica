@@ -27,9 +27,11 @@ cv2.createTrackbar('fourththreshHoldMin','control',0,255,nothing)
 cv2.createTrackbar('fourththreshHoldMax','control',0,255,nothing)
 cv2.setTrackbarPos('fourththreshHoldMin', 'control', 100)
 cv2.setTrackbarPos('fourththreshHoldMax', 'control', 255)
+previousLastNumber = 0
 while(True):
     ret, frame = cap.read()
 
+    # NOTE: Creating a cropped frame (taking out the A4 paper from the picture)
     firstthreshHoldMin = cv2.getTrackbarPos('firstthreshHoldMin', 'control')
     firstthreshHoldMax = cv2.getTrackbarPos('firstthreshHoldMax', 'control')
 
@@ -44,17 +46,8 @@ while(True):
     ret, secondThreshold = cv2.threshold(edged, secondthreshHoldMin, secondthreshHoldMax, cv2.THRESH_TOZERO_INV)
     ret, thirdThreshold = cv2.threshold(secondThreshold, thirdthreshHoldMin, thirdthreshHoldMax, cv2.THRESH_BINARY)
 
-    # th2 = cv2.adaptiveThreshold(edged, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
     contours, h = cv2.findContours(thirdThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    # cv2.imshow('First', firstThreshold)
-    # cv2.imshow('Second', secondThreshold)
-    # cv2.imshow('Third', thirdThreshold)
 
-    # cv2.imshow('edged', edged)
-    # cv2.imshow('secondThreshold', secondThreshold)
-    #
-
-    # imCrop = frame
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         if w > 100 and h > 100:
@@ -69,29 +62,59 @@ while(True):
 
     croppedFrame = frame[y:y+h, x:x+w]
 
+
+    #
+    # NOTE: Detection of letters
+    #
     fourththreshHoldMin = cv2.getTrackbarPos('fourththreshHoldMin', 'control')
     fourththreshHoldMax = cv2.getTrackbarPos('fourththreshHoldMax', 'control')
 
+    ret, croppedFrameThreshold = cv2.threshold(croppedFrame, fourththreshHoldMin, fourththreshHoldMax, cv2.THRESH_BINARY_INV)
+    edged = cv2.cvtColor(croppedFrameThreshold, cv2.COLOR_BGR2GRAY)
 
-    ret, test = cv2.threshold(croppedFrame, fourththreshHoldMin, fourththreshHoldMax, cv2.THRESH_BINARY_INV)
+    if croppedFrame.size > 100000:
+        array = []
+        i = 0
+        newContours, h = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        for cnt in newContours:
+            x, y, w, h = cv2.boundingRect(cnt)
+            if w > 20 and w < 60 and h > 20 and h < 60:
 
-    edged = cv2.cvtColor(test, cv2.COLOR_BGR2GRAY)
+                size = cv2.contourArea(cnt)
+                if size < 1000:
+                    array.insert(i,[x,y,w,h])
+                    # cv2.rectangle(croppedFrame, (x, y), (x + w, y + h), (0, 215, 255), 2)
+                    i = i + 1
 
+        #
+        # Creating the images of the detected letters
+        #
+        lastNumber = 0
+        for index,x in enumerate(array):
+            cv2.imshow(str(index), croppedFrame[x[1]:x[1]+x[3], x[0]:x[0]+x[2]])
+            lastNumber = index
 
-    # TODO: Fix crash on houghlines
-    lines = cv2.HoughLinesP(test, 1, np.pi / 180, 30, maxLineGap=250)
-    for line in lines:
-        x1, y1, x2, y2 = line[0]
-        cv2.line(croppedFrame, (x1, y1), (x2, y2), (0, 0, 128), 1)
+            # TODO: Fix crash on houghlines
+            # lines = cv2.HoughLinesP(test, 1, np.pi / 180, 30, maxLineGap=250)
+            # for line in lines:
+            #     x1, y1, x2, y2 = line[0]
+            #     cv2.line(croppedFrame, (x1, y1), (x2, y2), (0, 0, 128), 1)
 
-    cv2.imshow('cropped', edged)
+        #
+        # Removing the remaining windows (falsely detected or smaller word)
+        #
+        for x in range(lastNumber + 1, previousLastNumber + 1):
+            cv2.destroyWindow(str(x))
+        previousLastNumber = lastNumber
 
-
-    # cv2.imshow('Original', frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    #
+    # NOTE: Disable properly (20ms wait for better performance)
+    #
+    if cv2.waitKey(20) & 0xFF == ord('q'):
         break
 
+#
 # When everything done, release the capture
+#
 cap.release()
 cv2.destroyAllWindows()
