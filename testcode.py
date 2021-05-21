@@ -85,33 +85,60 @@ while(True):
 
                 size = cv2.contourArea(cnt)
                 if size < 3000:
-                    array.insert(i,[x,y,w,h])
-                    # cv2.rectangle(croppedFrame, (x, y), (x + w, y + h), (0, 215, 255), 2)
+                    north = x - 5
+                    east = (y + h) + 5
+                    south = (x + w) + 5
+                    west = y - 5
+                    if north < 0:
+                        north = 0
+                    if east < 0:
+                        east = 0
+                    if south < 0:
+                        south = 0
+                    if west < 0:
+                        west = 0
+                    array.insert(i,[north,east,south,west])
+                    # cv2.rectangle(croppedFrame, (north, west), (south, east), (0, 215, 255), 2)
                     i = i + 1
+        # cv2.imshow('test', croppedFrame)
 
         #
         # Creating the images of the detected letters
-        #
+
         lastNumber = 0
         for index,x in enumerate(array):
-            temporaryFrame = croppedFrame[x[1]:x[1]+x[3], x[0]:x[0]+x[2]]
-            cannyFrame = cv2.Canny(temporaryFrame,0,255)
+            temporaryFrame = croppedFrame[x[3]:x[1], x[0]:x[2]]
+            cannyFrame = cv2.Canny(temporaryFrame,200,255)
             lastNumber = index
 
             # edged = cv2.cvtColor(temporaryFrame, cv2.COLOR_BGR2GRAY)
             # print(type(temporaryFrame))
             # temporaryFrame = np.CV_8UC1(temporaryFrame)
-            lines = cv2.HoughLinesP(cannyFrame, 1, np.pi / 180, 10, minLineLength=5, maxLineGap=1)
+            lines = cv2.HoughLinesP(cannyFrame, 1, np.pi / 180, 10, minLineLength=1, maxLineGap=1)
             if lines is not None:
                 amountofLines = 0
                 print('Image: ',index)
+                straight = 0
+                vertical = 0
+                diagonal = 0
                 for idx,line in enumerate(lines):
                     amountofLines = idx
                     x1, y1, x2, y2 = line[0]
                     angle = math.atan2(y1 - y2, x1 - x2)
                     angle = angle * 180 / math.pi
-                    print(angle)
-                    cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                    if angle > 88 and angle < 92:
+                        straight = straight + 1
+                        cv2.line(temporaryFrame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                    elif angle > 178 and angle < 182:
+                        vertical = vertical + 1
+                        cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    elif angle > 133 and angle < 137 or angle < -133 and angle > -137:
+                        diagonal = diagonal + 1
+                        cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+                print('Total straight lines: ',straight)
+                print('Total vertical lines: ',vertical)
+                print('Total diagonal lines: ',diagonal)
                 print('Total amount of lines:',amountofLines)
             cv2.imshow(str(index), temporaryFrame)
 
