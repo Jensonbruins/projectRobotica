@@ -66,7 +66,6 @@ while(True):
 
     croppedFrame = frame[y:y+h, x:x+w]
 
-
     #
     # NOTE: Detection of letters
     #
@@ -79,13 +78,13 @@ while(True):
     if croppedFrame.size > 100000:
         array = []
         i = 0
-        newContours, h = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        for cnt in newContours:
+        newContours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        for index,cnt in enumerate(newContours):
             x, y, w, h = cv2.boundingRect(cnt)
-            if w > 20 and w < 60 and h > 20 and h < 60:
+            if w > 25 and w < 70 and h > 25 and h < 70:
 
                 size = cv2.contourArea(cnt)
-                if size < 1000:
+                if size < 3000:
                     array.insert(i,[x,y,w,h])
                     # cv2.rectangle(croppedFrame, (x, y), (x + w, y + h), (0, 215, 255), 2)
                     i = i + 1
