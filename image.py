@@ -1,6 +1,6 @@
 import cv2
 from lineExtractor import lineExtractor
-from imageConversion import imageConverter
+from paperDetection import imageConverter
 
 cap = cv2.VideoCapture(0)
 
