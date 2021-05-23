@@ -41,7 +41,6 @@ while(True):
         lines = cv2.HoughLinesP(cannyFrame, 1, np.pi / 180, 9, minLineLength=5, maxLineGap=5)
         # if there are lines in image
         if lines is not None:
-            print('Image: ',index)
             horizontal = 0
             vertical = 0
             diagonal = 0
@@ -59,16 +58,12 @@ while(True):
                 elif angle > 130 and angle < 140 or angle < -130 and angle > -140:
                     diagonal = diagonal + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
-            cv2.imshow('t' + str(index), temporaryFrame)
-            cv2.imshow('a' + str(index), blur)
-            cv2.imshow('c' + str(index), cannyFrame)
-            twodarray.append({'index': index, 'horizontal': horizontal, 'vertical': vertical, 'diagonal': diagonal})
-            print(twodarray)
+
+            threedarray.append({'index': index, 'horizontal': horizontal, 'vertical': vertical, 'diagonal': diagonal})
+        cv2.imshow('t' + str(index), temporaryFrame)
+        cv2.imshow('a' + str(index), blur)
+        cv2.imshow('c' + str(index), cannyFrame)
             # twodarray.append([index,[horizontal,vertical,diagonal]])
-
-
-
-
     #
     # Removing the remaining windows (falsely detected or smaller word)
     #
@@ -77,13 +72,41 @@ while(True):
         cv2.destroyWindow('a'+str(x))
         cv2.destroyWindow('c'+str(x))
 
-
     previousLastNumber = lastNumber
 
     #
     # NOTE: Disable properly (20ms wait for better performance)
     #
     if cv2.waitKey(20) & 0xFF == ord('q'):
+        # print(threedarray)
+        newArray = []
+        for x in threedarray:
+            try:
+                indexOld = newArray[x['index']][0]
+            except:
+                indexOld = 0
+            try:
+                horizontalOld = newArray[x['index']][1]
+            except:
+                horizontalOld = 0
+            try:
+                verticalOld = newArray[x['index']][2]
+            except:
+                verticalOld = 0
+            try:
+                diagonalOld = newArray[x['index']][3]
+            except:
+                diagonalOld = 0
+
+            try:
+                newArray.pop(x['index'])
+                newArray.insert(x['index'], [indexOld + 1,horizontalOld + horizontal, verticalOld + vertical, diagonalOld + diagonal])
+            except:
+                newArray.insert(x['index'], [indexOld + 1,horizontalOld + horizontal, verticalOld + vertical, diagonalOld + diagonal])
+        print(*newArray, sep='\n')
+        for a in newArray:
+            print('Horizontal: ', (a[1] / a[0]), 'Vertical: ', (a[2] / a[0]), 'diagonal: ', (a[3] / a[0]))
+
         break
 
 #
