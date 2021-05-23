@@ -6,9 +6,6 @@ from letterDetection import letterDetection
 
 cap = cv2.VideoCapture(0)
 
-def nothing(x):
-    pass
-
 #
 # TODO: Find a fix for global variable 'previousLastNumber'
 #
