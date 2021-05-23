@@ -40,4 +40,4 @@ class letterDetection():
                         self.array.insert(i, [north, east, south, west])
                         # cv2.rectangle(croppedFrame, (north, west), (south, east), (0, 215, 255), 2)
                         i = i + 1
-            # cv2.imshow('test', croppedFrame)
+            cv2.imshow('test', croppedFrameThreshold)

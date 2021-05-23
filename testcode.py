@@ -10,15 +10,10 @@ cap = cv2.VideoCapture(0)
 # TODO: Find a fix for global variable 'previousLastNumber'
 #
 previousLastNumber = 0
-avgIndex = 0
-avgHorizontal = 0
-avgVertical = 0
-avgDiagonal = 0
-avgArray = []
-avgArrayIndex = 0
 
 paper = paperDetection()
 letter = letterDetection()
+threedarray = []
 while(True):
     ret, frame = cap.read()
 
@@ -31,24 +26,26 @@ while(True):
     # Creating the images of the detected letters
 
     lastNumber = 0
+    twodarray = []
+    # loop over every letter
     for index,x in enumerate(letter.get()):
+        # edit frames to make letters more clear
         temporaryFrame = paper.get()[x[3]:x[1], x[0]:x[2]]
-        # blur = cv2.GaussianBlur(temporaryFrame,(5,5),0)
         blur = cv2.medianBlur(temporaryFrame,5)
         blur = cv2.bilateralFilter(blur,9,75,75)
         cannyFrame = cv2.Canny(blur,200,255)
+        # important for cleanup
         lastNumber = index
 
-        # edged = cv2.cvtColor(temporaryFrame, cv2.COLOR_BGR2GRAY)
-        # print(type(temporaryFrame))
-        # temporaryFrame = np.CV_8UC1(temporaryFrame)
+        # Check for lines in image
         lines = cv2.HoughLinesP(cannyFrame, 1, np.pi / 180, 9, minLineLength=5, maxLineGap=5)
+        # if there are lines in image
         if lines is not None:
-            amountofLines = 0
             print('Image: ',index)
             horizontal = 0
             vertical = 0
             diagonal = 0
+            # loop over every line in image
             for line in lines:
                 x1, y1, x2, y2 = line[0]
                 angle = math.atan2(y1 - y2, x1 - x2)
@@ -62,32 +59,14 @@ while(True):
                 elif angle > 130 and angle < 140 or angle < -130 and angle > -140:
                     diagonal = diagonal + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
-            #
-            # print('Total horizontal lines: ',horizontal)
-            # print('Total vertical lines: ',vertical)
-            # print('Total diagonal lines: ',diagonal)
-            # print('Total amount of lines:',len(lines))
-            #
-            if avgIndex != 20 and index == 0:
-                avgHorizontal = avgHorizontal + horizontal
-                avgDiagonal = avgDiagonal + diagonal
-                avgVertical = avgVertical + vertical
-                avgIndex = avgIndex + 1
-            elif avgIndex == 20:
-                print('index:', avgIndex)
-                print('Average horizontal lines: ',avgHorizontal / 20)
-                print('Average vertical lines: ',avgVertical / 20)
-                print('Average diagonal lines: ',avgDiagonal / 20)
-                avgArray.insert(avgArrayIndex,[avgHorizontal / 20,avgVertical / 20,avgDiagonal / 20])
-                avgArrayIndex = avgArrayIndex + 1
-                avgIndex = 0
-                avgHorizontal = 0
-                avgVertical = 0
-                avgDiagonal = 0
+            cv2.imshow('t' + str(index), temporaryFrame)
+            cv2.imshow('a' + str(index), blur)
+            cv2.imshow('c' + str(index), cannyFrame)
+            twodarray.append({'index': index, 'horizontal': horizontal, 'vertical': vertical, 'diagonal': diagonal})
+            print(twodarray)
+            # twodarray.append([index,[horizontal,vertical,diagonal]])
 
-        cv2.imshow('t'+str(index), temporaryFrame)
-        cv2.imshow('a'+str(index), blur)
-        cv2.imshow('c'+str(index), cannyFrame)
+
 
 
     #
@@ -105,7 +84,6 @@ while(True):
     # NOTE: Disable properly (20ms wait for better performance)
     #
     if cv2.waitKey(20) & 0xFF == ord('q'):
-        print(avgArray)
         break
 
 #
