@@ -32,6 +32,12 @@ cv2.setTrackbarPos('fourththreshHoldMax', 'control', 255)
 # TODO: Find a fix for global variable 'previousLastNumber'
 #
 previousLastNumber = 0
+avgIndex = 0
+avgHorizontal = 0
+avgVertical = 0
+avgDiagonal = 0
+avgArray = []
+avgArrayIndex = 0
 while(True):
     ret, frame = cap.read()
 
@@ -63,6 +69,7 @@ while(True):
                 # Debug purposes
                 # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 215, 255), 2)
                 break
+    # cv2.imshow('test', frame)
 
     croppedFrame = frame[y:y+h, x:x+w]
 
@@ -70,7 +77,7 @@ while(True):
     # NOTE: Detection of letters
     #
     fourththreshHoldMin = cv2.getTrackbarPos('fourththreshHoldMin', 'control')
-    fourththreshHoldMax = cv2.getTrackbarPos('fourththreshHoldMax', 'control')
+    fourththreshHoldMax = cv2.getTrackbarqPos('fourththreshHoldMax', 'control')
 
     ret, croppedFrameThreshold = cv2.threshold(croppedFrame, fourththreshHoldMin, fourththreshHoldMax, cv2.THRESH_BINARY_INV)
     edged = cv2.cvtColor(croppedFrameThreshold, cv2.COLOR_BGR2GRAY)
@@ -108,52 +115,79 @@ while(True):
         lastNumber = 0
         for index,x in enumerate(array):
             temporaryFrame = croppedFrame[x[3]:x[1], x[0]:x[2]]
-            cannyFrame = cv2.Canny(temporaryFrame,200,255)
+            # blur = cv2.GaussianBlur(temporaryFrame,(5,5),0)
+            blur = cv2.medianBlur(temporaryFrame,5)
+            blur = cv2.bilateralFilter(blur,9,75,75)
+            cannyFrame = cv2.Canny(blur,200,255)
             lastNumber = index
 
             # edged = cv2.cvtColor(temporaryFrame, cv2.COLOR_BGR2GRAY)
             # print(type(temporaryFrame))
             # temporaryFrame = np.CV_8UC1(temporaryFrame)
-            lines = cv2.HoughLinesP(cannyFrame, 1, np.pi / 180, 10, minLineLength=1, maxLineGap=1)
+            lines = cv2.HoughLinesP(cannyFrame, 1, np.pi / 180, 9, minLineLength=5, maxLineGap=5)
             if lines is not None:
                 amountofLines = 0
                 print('Image: ',index)
-                straight = 0
+                horizontal = 0
                 vertical = 0
                 diagonal = 0
-                for idx,line in enumerate(lines):
-                    amountofLines = idx
+                for line in lines:
                     x1, y1, x2, y2 = line[0]
                     angle = math.atan2(y1 - y2, x1 - x2)
                     angle = angle * 180 / math.pi
-                    if angle > 88 and angle < 92:
-                        straight = straight + 1
-                        cv2.line(temporaryFrame, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                    elif angle > 178 and angle < 182:
+                    if angle > 85 and angle < 95:
                         vertical = vertical + 1
+                        cv2.line(temporaryFrame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                    elif angle > 175 and angle < 185:
+                        horizontal = horizontal + 1
                         cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                    elif angle > 133 and angle < 137 or angle < -133 and angle > -137:
+                    elif angle > 130 and angle < 140 or angle < -130 and angle > -140:
                         diagonal = diagonal + 1
                         cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                #
+                # print('Total horizontal lines: ',horizontal)
+                # print('Total vertical lines: ',vertical)
+                # print('Total diagonal lines: ',diagonal)
+                # print('Total amount of lines:',len(lines))
+                #
+                if avgIndex != 20 and index == 0:
+                    avgHorizontal = avgHorizontal + horizontal
+                    avgDiagonal = avgDiagonal + diagonal
+                    avgVertical = avgVertical + vertical
+                    avgIndex = avgIndex + 1
+                elif avgIndex == 20:
+                    print('index:', avgIndex)
+                    print('Average horizontal lines: ',avgHorizontal / 20)
+                    print('Average vertical lines: ',avgVertical / 20)
+                    print('Average diagonal lines: ',avgDiagonal / 20)
+                    avgArray.insert(avgArrayIndex,[avgHorizontal / 20,avgVertical / 20,avgDiagonal / 20])
+                    avgArrayIndex = avgArrayIndex + 1
+                    avgIndex = 0
+                    avgHorizontal = 0
+                    avgVertical = 0
+                    avgDiagonal = 0
 
-                print('Total straight lines: ',straight)
-                print('Total vertical lines: ',vertical)
-                print('Total diagonal lines: ',diagonal)
-                print('Total amount of lines:',amountofLines)
-            cv2.imshow(str(index), temporaryFrame)
+            cv2.imshow('t'+str(index), temporaryFrame)
+            cv2.imshow('a'+str(index), blur)
+            cv2.imshow('c'+str(index), cannyFrame)
 
 
         #
         # Removing the remaining windows (falsely detected or smaller word)
         #
         for x in range(lastNumber + 1, previousLastNumber + 1):
-            cv2.destroyWindow(str(x))
+            cv2.destroyWindow('t'+str(x))
+            cv2.destroyWindow('a'+str(x))
+            cv2.destroyWindow('c'+str(x))
+
+
         previousLastNumber = lastNumber
 
     #
     # NOTE: Disable properly (20ms wait for better performance)
     #
     if cv2.waitKey(20) & 0xFF == ord('q'):
+        print(avgArray)
         break
 
 #
