@@ -9,13 +9,6 @@ cap = cv2.VideoCapture(0)
 def nothing(x):
     pass
 
-cv2.namedWindow('control')
-
-cv2.createTrackbar('fourththreshHoldMin','control',0,255,nothing)
-cv2.createTrackbar('fourththreshHoldMax','control',0,255,nothing)
-cv2.setTrackbarPos('fourththreshHoldMin', 'control', 100)
-cv2.setTrackbarPos('fourththreshHoldMax', 'control', 255)
-
 #
 # TODO: Find a fix for global variable 'previousLastNumber'
 #
