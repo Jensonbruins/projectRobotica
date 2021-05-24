@@ -55,7 +55,7 @@ while(True):
                 elif angle > 175 and angle < 185:
                     horizontal = horizontal + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                elif angle > 130 and angle < 140 or angle < -130 and angle > -140:
+                elif angle > 100 and angle < 170 or angle < -100 and angle > -170:
                     diagonal = diagonal + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
