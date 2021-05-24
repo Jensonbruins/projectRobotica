@@ -13,7 +13,7 @@ previousLastNumber = 0
 
 paper = paperDetection()
 letter = letterDetection()
-threedarray = []
+averageArray = []
 while(True):
     ret, frame = cap.read()
 
@@ -59,18 +59,37 @@ while(True):
                     diagonal = diagonal + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-            threedarray.append({'index': index, 'horizontal': horizontal, 'vertical': vertical, 'diagonal': diagonal})
+            if (len(averageArray) >= (index + 1)):
+                oldIndex = averageArray[index][0]
+                oldHorizontal = averageArray[index][1]
+                oldVertical = averageArray[index][2]
+                oldDiagonal = averageArray[index][3]
+                averageArray.pop(index)
+                averageArray.insert(index, [(oldIndex + 1), (oldHorizontal + horizontal), (oldVertical + vertical), (oldDiagonal + diagonal)])
+            else:
+                averageArray.insert(index, [0, horizontal, vertical, diagonal])
+
         cv2.imshow('t' + str(index), temporaryFrame)
-        cv2.imshow('a' + str(index), blur)
-        cv2.imshow('c' + str(index), cannyFrame)
-            # twodarray.append([index,[horizontal,vertical,diagonal]])
+        # cv2.imshow('a' + str(index), blur)
+        # cv2.imshow('c' + str(index), cannyFrame)
+
+    for x in averageArray:
+        if x[0] == 20:
+            print(averageArray)
+            for a in averageArray:
+                if (a[0] != 0):
+                    print('Horizontal: ', a[1]/a[0], 'Vertical: ', a[2]/a[0], 'Diagonal: ', a[3]/a[0])
+            averageArray = []
+            break
+
+
     #
     # Removing the remaining windows (falsely detected or smaller word)
     #
     for x in range(lastNumber + 1, previousLastNumber + 1):
         cv2.destroyWindow('t'+str(x))
-        cv2.destroyWindow('a'+str(x))
-        cv2.destroyWindow('c'+str(x))
+        # cv2.destroyWindow('a'+str(x))
+        # cv2.destroyWindow('c'+str(x))
 
     previousLastNumber = lastNumber
 
@@ -78,34 +97,6 @@ while(True):
     # NOTE: Disable properly (20ms wait for better performance)
     #
     if cv2.waitKey(20) & 0xFF == ord('q'):
-        # print(threedarray)
-        newArray = []
-        for x in threedarray:
-            try:
-                indexOld = newArray[x['index']][0]
-            except:
-                indexOld = 0
-            try:
-                horizontalOld = newArray[x['index']][1]
-            except:
-                horizontalOld = 0
-            try:
-                verticalOld = newArray[x['index']][2]
-            except:
-                verticalOld = 0
-            try:
-                diagonalOld = newArray[x['index']][3]
-            except:
-                diagonalOld = 0
-
-            try:
-                newArray.pop(x['index'])
-                newArray.insert(x['index'], [indexOld + 1,horizontalOld + horizontal, verticalOld + vertical, diagonalOld + diagonal])
-            except:
-                newArray.insert(x['index'], [indexOld + 1,horizontalOld + horizontal, verticalOld + vertical, diagonalOld + diagonal])
-        print(*newArray, sep='\n')
-        for a in newArray:
-            print('Horizontal: ', (a[1] / a[0]), 'Vertical: ', (a[2] / a[0]), 'diagonal: ', (a[3] / a[0]))
 
         break
 
