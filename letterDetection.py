@@ -24,7 +24,6 @@ class letterDetection():
                 x, y, w, h = cv2.boundingRect(cnt)
                 dimensions = edged.shape
                 offset = self.offset
-                print(dimensions)
                 if x > offset and x < (dimensions[1] - offset) and y > offset and y < (dimensions[0] - offset):
                     if w > 25 and w < 70 and h > 25 and h < 70:
 

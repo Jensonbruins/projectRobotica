@@ -49,17 +49,17 @@ while(True):
                 x1, y1, x2, y2 = line[0]
                 angle = math.atan2(y1 - y2, x1 - x2)
                 angle = angle * 180 / math.pi
-                if angle > 85 and angle < 95:
+                if 85 < angle < 95:
                     vertical = vertical + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                elif angle > 175 and angle < 185:
+                elif 175 < angle < 185:
                     horizontal = horizontal + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                elif angle > 100 and angle < 170 or angle < -100 and angle > -170:
+                elif 100 < angle < 170 or -100 > angle > -170:
                     diagonal = diagonal + 1
                     cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-            if (len(averageArray) >= (index + 1)):
+            if len(averageArray) >= (index + 1):
                 oldIndex = averageArray[index][0]
                 oldHorizontal = averageArray[index][1]
                 oldVertical = averageArray[index][2]
@@ -77,7 +77,7 @@ while(True):
         if x[0] == 20:
             print(averageArray)
             for a in averageArray:
-                if (a[0] != 0):
+                if a[0] != 0:
                     print('Horizontal: ', a[1]/a[0], 'Vertical: ', a[2]/a[0], 'Diagonal: ', a[3]/a[0])
             averageArray = []
             break
