@@ -72,7 +72,6 @@ while(True):
     thresholdVar = cv2.getTrackbarPos('threshold','control')
 
     lastNumber = 0
-    twodarray = []
     # loop over every letter
     for index,x in enumerate(letter.get()):
         # edit frames to make letters more clear
