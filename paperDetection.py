@@ -17,6 +17,10 @@ class paperDetection():
         contours, h = cv2.findContours(thirdThreshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         # Get the contours of the white paper on the cardboard and display that back
+        xCoordinates = 1
+        yCoordinates = 1
+        wCoordinates = 1
+        hCoordinates = 1
         for cnt in contours:
             x, y, w, h = cv2.boundingRect(cnt)
             if w > 100 and h > 100:
@@ -24,7 +28,10 @@ class paperDetection():
                 if size > 100000:
                     # Debug purposes
                     # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 215, 255), 2)
+                    xCoordinates = x
+                    yCoordinates = y
+                    wCoordinates = w
+                    hCoordinates = h
                     break
-        # cv2.imshow('test', frame)
-
-        self.frame = frame[y:y + h, x:x + w]
+        self.frame = frame[yCoordinates:yCoordinates + hCoordinates, xCoordinates:xCoordinates + wCoordinates]
+        cv2.imshow('test', self.frame)
