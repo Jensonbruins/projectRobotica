@@ -31,8 +31,8 @@ while(True):
         ['A', 1, 2, 0, 0.2, 7.5, 9.1],
         ['B', 5.5, 6.5, 4.5, 7, 2, 3],
         ['C', 0, 0, 0, 0, 0, 0],
-        ['D', 3, 4.5, 3.5, 5, 2.5, 3.5],
-        # ['E', 0, 0, 0, 0, 0, 0],
+        ['D', 3, 4.5, 3.5, 5.5, 2.5, 4],
+        ['E', 5.5, 7.5, 1.5, 3.5, 0, 0.5],
         # ['F', 0, 0, 0, 0, 0, 0],
         # ['G', 0, 0, 0, 0, 0, 0],
         # ['H', 0, 0, 0, 0, 0, 0],
@@ -41,7 +41,7 @@ while(True):
         # ['K', 0, 0, 0, 0, 0, 0],
         # ['L', 0, 0, 0, 0, 0, 0],
         # ['M', 0, 0, 0, 0, 0, 0],
-        # ['N', 0, 0, 0, 0, 0, 0],
+        ['N', 0, 0.5, 4, 6.5, 4, 5.5],
         # ['O', 0, 0, 0, 0, 0, 0],
         # ['P', 0, 0, 0, 0, 0, 0],
         # ['Q', 0, 0, 0, 0, 0, 0],
@@ -115,13 +115,16 @@ while(True):
                 averageArray.insert(index, [0, horizontal, vertical, diagonal])
 
         cv2.imshow('t' + str(index), temporaryFrame)
-        cv2.imshow('a' + str(index), blur)
-        cv2.imshow('c' + str(index), cannyFrame)
+        # cv2.imshow('a' + str(index), blur)
+        # cv2.imshow('c' + str(index), cannyFrame)
 
     for x in averageArray:
         if x[0] == 10:
             # print(averageArray)
-            for a in averageArray:
+            newAverageArray = averageArray
+            averageArray = []
+            print(' ')
+            for a in newAverageArray:
                 if a[0] > 5:
                     horizontalAvg = a[1]/a[0]
                     verticalAvg = a[2]/a[0]
@@ -139,7 +142,6 @@ while(True):
                                 if l[5] <= diagonalAvg <= l[6]:
                                     print('target = ', l[0])
                                     break;
-            averageArray = []
             break
 
 
@@ -148,8 +150,8 @@ while(True):
     #
     for x in range(lastNumber + 1, previousLastNumber + 1):
         cv2.destroyWindow('t'+str(x))
-        cv2.destroyWindow('a'+str(x))
-        cv2.destroyWindow('c'+str(x))
+        # cv2.destroyWindow('a'+str(x))
+        # cv2.destroyWindow('c'+str(x))
 
     previousLastNumber = lastNumber
 
