@@ -1,7 +1,6 @@
-import numpy as np
 import cv2
 
-class letterDetection():
+class letterFinder():
     def __init__(self):
         self.frame = 0
         self.offset = 50
