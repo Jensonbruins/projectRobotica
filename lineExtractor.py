@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 import math
 
-class lineExtractor():
+
+class LineExtractor:
     def __init__(self):
         self.averageArray = []
         self.previousLastNumber = 0
@@ -13,7 +14,7 @@ class lineExtractor():
     def clean(self):
         self.averageArray = []
 
-    def update(self,letterArray, detectedPaper):
+    def update(self, letterArray, detectedPaper):
         for index, x in enumerate(letterArray):
             # edit frames to make letters more clear
             temporaryFrame = detectedPaper[x[3]:x[1], x[0]:x[2]]
@@ -51,19 +52,20 @@ class lineExtractor():
                     oldVertical = self.averageArray[index][2]
                     oldDiagonal = self.averageArray[index][3]
                     self.averageArray.pop(index)
-                    self.averageArray.insert(index, [(oldIndex + 1), (oldHorizontal + horizontal), (oldVertical + vertical),
-                                                (oldDiagonal + diagonal)])
+                    self.averageArray.insert(index,
+                                             [(oldIndex + 1), (oldHorizontal + horizontal), (oldVertical + vertical),
+                                              (oldDiagonal + diagonal)])
                 else:
                     self.averageArray.insert(index, [0, horizontal, vertical, diagonal])
 
-# DEBUG CODE
-#             cv2.imshow('t' + str(index), temporaryFrame)
-#             cv2.imshow('a' + str(index), blur)
-#             cv2.imshow('c' + str(index), cannyFrame)
-#
-#         for x in range(len(letterArray), self.previousLastNumber):
-#             cv2.destroyWindow('t' + str(x))
-#             cv2.destroyWindow('a'+str(x))
-#             cv2.destroyWindow('c'+str(x))
+        # DEBUG CODE
+        #             cv2.imshow('t' + str(index), temporaryFrame)
+        #             cv2.imshow('a' + str(index), blur)
+        #             cv2.imshow('c' + str(index), cannyFrame)
+        #
+        #         for x in range(len(letterArray), self.previousLastNumber):
+        #             cv2.destroyWindow('t' + str(x))
+        #             cv2.destroyWindow('a'+str(x))
+        #             cv2.destroyWindow('c'+str(x))
 
         self.previousLastNumber = len(letterArray)

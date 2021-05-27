@@ -1,28 +1,26 @@
 import cv2
-import numpy as np
-import math
-from paperDetection import paperDetection
-from letterFinder import letterFinder
-from lineExtractor import lineExtractor
+from paperDetection import PaperDetection
+from letterFinder import LetterFinder
+from lineExtractor import LineExtractor
 
 cap = cv2.VideoCapture(0)
 
 #
 # TODO: Find a fix for global variable 'previousLastNumber'
 #
-paper = paperDetection()
-letter = letterFinder()
-lineAverage = lineExtractor()
+paper = PaperDetection()
+letter = LetterFinder()
+lineAverage = LineExtractor()
 
 wordArray = [
-    ['Den Haag', 'D','E','N']
+    ['Den Haag', 'D', 'E', 'N'],
     ['Alkmaar', 'A', 'L', 'K']
 
 ]
 
-while(True):
+while True:
     letterArray = [
-    #   ['letter', horizontalMin, horizontalMax, verticalMin, verticalMax, diagonalMin, diagonalMax]
+        #   ['letter', horizontalMin, horizontalMax, verticalMin, verticalMax, diagonalMin, diagonalMax]
         ['A', 1, 2, 0, 0.2, 7.5, 9.1],
         ['B', 5.5, 6.5, 4.5, 7, 2, 3],
         ['C', 0, 0, 0, 0, 0, 0],
@@ -51,7 +49,6 @@ while(True):
         # ['Z', 0, 0, 0, 0, 0, 0],
     ]
 
-
     ret, frame = cap.read()
 
     paper.update(frame)
@@ -64,27 +61,25 @@ while(True):
     # Creating the images of the detected letters
     #
 
-
-
     targetArray = []
 
     for x in lineAverage.get():
         if x[0] == 10:
-            newAverageArray = lineAverage.get()
+            averageArray = lineAverage.get()
             lineAverage.clean()
-            for a in newAverageArray:
-                if a[0] > 5:
-                    horizontalAvg = a[1]/a[0]
-                    verticalAvg = a[2]/a[0]
-                    diagonalAvg = a[3]/a[0]
+            for averageValue in averageArray:
+                if averageValue[0] > 5:
+                    horizontalAvg = averageValue[1] / averageValue[0]
+                    verticalAvg = averageValue[2] / averageValue[0]
+                    diagonalAvg = averageValue[3] / averageValue[0]
 
                     flag = 0
-                    for l in letterArray:
-                        if l[1] <= horizontalAvg <= l[2]:
-                            if l[3] <= verticalAvg <= l[4]:
-                                if l[5] <= diagonalAvg <= l[6]:
+                    for letter in letterArray:
+                        if letter[1] <= horizontalAvg <= letter[2]:
+                            if letter[3] <= verticalAvg <= letter[4]:
+                                if letter[5] <= diagonalAvg <= letter[6]:
                                     flag = 1
-                                    targetArray.append(l[0])
+                                    targetArray.append(letter[0])
                                     break
                     if flag == 0:
                         targetArray.append('')
