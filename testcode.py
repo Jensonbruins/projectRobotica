@@ -78,12 +78,16 @@ while(True):
                     verticalAvg = a[2]/a[0]
                     diagonalAvg = a[3]/a[0]
 
+                    flag = 0
                     for l in letterArray:
                         if l[1] <= horizontalAvg <= l[2]:
                             if l[3] <= verticalAvg <= l[4]:
                                 if l[5] <= diagonalAvg <= l[6]:
+                                    flag = 1
                                     targetArray.append(l[0])
                                     break
+                    if flag == 0:
+                        targetArray.append('')
             break
 
     for word in wordArray:
