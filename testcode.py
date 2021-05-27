@@ -14,7 +14,12 @@ paper = paperDetection()
 letter = letterFinder()
 lineAverage = lineExtractor()
 
-averageArray = []
+wordArray = [
+    ['Den Haag', 'D','E','N']
+    ['Alkmaar', 'A', 'L', 'K']
+
+]
+
 while(True):
     letterArray = [
     #   ['letter', horizontalMin, horizontalMax, verticalMin, verticalMax, diagonalMin, diagonalMax]
@@ -61,31 +66,38 @@ while(True):
 
 
 
+    targetArray = []
+
     for x in lineAverage.get():
         if x[0] == 10:
-            # print(averageArray)
             newAverageArray = lineAverage.get()
             lineAverage.clean()
-            print(' ')
             for a in newAverageArray:
                 if a[0] > 5:
                     horizontalAvg = a[1]/a[0]
                     verticalAvg = a[2]/a[0]
                     diagonalAvg = a[3]/a[0]
-                    print('Horizontal: ', horizontalAvg, 'Vertical: ', verticalAvg, 'Diagonal: ', diagonalAvg)
 
                     for l in letterArray:
-                        # print(l[0])
-                        # print(l[1], horizontalAvg, l[2])
                         if l[1] <= horizontalAvg <= l[2]:
-                            # print('worked')
-                            # print(l[3], verticalAvg, l[4])
                             if l[3] <= verticalAvg <= l[4]:
-                                # print('worked1')
                                 if l[5] <= diagonalAvg <= l[6]:
-                                    print('target = ', l[0])
-                                    break;
+                                    targetArray.append(l[0])
+                                    break
             break
+
+    for word in wordArray:
+        if (len(word) - 1) <= len(targetArray):
+            strike = 0
+            for targetIndex, targetValue in enumerate(targetArray):
+                if word[targetIndex] != targetValue:
+                    strike = strike + 1
+                if strike > 1:
+                    print('The word is not:', word[0])
+                    break
+            if strike < 2:
+                print('The word is: ', word[0])
+                break
 
     #
     # NOTE: Disable properly (20ms wait for better performance)
