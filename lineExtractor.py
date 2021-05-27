@@ -57,12 +57,12 @@ class lineExtractor():
                     self.averageArray.insert(index, [0, horizontal, vertical, diagonal])
 
 # DEBUG CODE
-#             cv2.imshow('t' + str(index), temporaryFrame)
+            cv2.imshow('t' + str(index), temporaryFrame)
 #             cv2.imshow('a' + str(index), blur)
 #             cv2.imshow('c' + str(index), cannyFrame)
 #
-#         for x in range(len(letterArray), self.previousLastNumber):
-#             cv2.destroyWindow('t' + str(x))
+        for x in range(len(letterArray), self.previousLastNumber):
+            cv2.destroyWindow('t' + str(x))
 #             cv2.destroyWindow('a'+str(x))
 #             cv2.destroyWindow('c'+str(x))
 
