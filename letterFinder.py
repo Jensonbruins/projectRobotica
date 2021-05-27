@@ -24,7 +24,7 @@ class letterFinder():
                 dimensions = edged.shape
                 offset = self.offset
                 if x > offset and x < (dimensions[1] - offset) and y > offset and y < (dimensions[0] - offset):
-                    if w > 25 and w < 70 and h > 25 and h < 70:
+                    if w > 25 and w < 100 and h > 25 and h < 100:
 
                         size = cv2.contourArea(cnt)
                         if size < 3000:
