@@ -102,9 +102,10 @@ def cameraDetection():
     #
     # NOTE: Disable properly (20ms wait for better performance)
     #
-        if cv2.waitKey(20):
-            if 0xFF == ord('q') or stopFlag == True:
-                break
+        if cv2.waitKey(5) & 0xFF == ord('q'):
+            break
+        if stopFlag:
+            break
 
         # if cv2.waitKey(20) & 0xFF == ord('q'):
         #     break
