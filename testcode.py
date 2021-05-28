@@ -85,19 +85,22 @@ while True:
                         targetArray.append('')
             break
 
-    for word in wordArray:
-        if (len(word) - 1) <= len(targetArray):
-            strike = 0
-            for targetIndex, targetValue in enumerate(targetArray):
-                if word[targetIndex] != targetValue:
-                    strike = strike + 1
-                if strike > 1:
-                    print('The word is not:', word[0])
+    if len(targetArray) > 0:
+        # print(targetArray)
+        for word in wordArray:
+            # print((len(word) - 1), len(targetArray))
+            if (len(word) - 1) <= len(targetArray):
+                strike = 0
+                for targetIndex, targetValue in enumerate(targetArray):
+                    # print('Word: ', word[targetIndex + 1],'Target: ', targetValue)
+                    if word[targetIndex + 1] != targetValue:
+                        strike = strike + 1
+                    if strike > 1:
+                        # print('The word is not:', word[0])
+                        break
+                if strike < 2:
+                    print('The word is: ', word[0])
                     break
-            if strike < 2:
-                print('The word is: ', word[0])
-                break
-
     #
     # NOTE: Disable properly (20ms wait for better performance)
     #
