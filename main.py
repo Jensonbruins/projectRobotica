@@ -1,7 +1,7 @@
 import cv2
-from paperDetection import paperDetection
-from letterFinder import letterFinder
-from lineExtractor import lineExtractor
+from wordDetection.paperDetection import paperDetection
+from wordDetection.letterFinder import letterFinder
+from wordDetection.lineExtractor import lineExtractor
 
 cap = cv2.VideoCapture(0)
 
