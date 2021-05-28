@@ -46,6 +46,7 @@ letterArray = [
 
 
 def cameraDetection():
+    stopFlag = False
     while(True):
         ret, frame = cap.read()
 
@@ -81,7 +82,7 @@ def cameraDetection():
                 break
 
         if len(targetArray) > 0:
-            # print(targetArray)
+            print(targetArray)
             for word in wordArray:
                 # print((len(word) - 1), len(targetArray))
                 if (len(word) - 1) <= len(targetArray):
@@ -95,13 +96,18 @@ def cameraDetection():
                             break
                     if strike < 2:
                         print('The word is: ', word[0])
+                        stopFlag = True
                         break
 
     #
     # NOTE: Disable properly (20ms wait for better performance)
     #
-        if cv2.waitKey(20) & 0xFF == ord('q'):
-            break
+        if cv2.waitKey(20):
+            if 0xFF == ord('q') or stopFlag == True:
+                break
+
+        # if cv2.waitKey(20) & 0xFF == ord('q'):
+        #     break
 
 #
 # When everything done, release the capture
