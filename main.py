@@ -1,15 +1,10 @@
 import cv2
-import numpy as np
-import math
 from paperDetection import paperDetection
 from letterFinder import letterFinder
 from lineExtractor import lineExtractor
 
 cap = cv2.VideoCapture(0)
 
-#
-# TODO: Find a fix for global variable 'previousLastNumber'
-#
 paper = paperDetection()
 letter = letterFinder()
 lineAverage = lineExtractor()
