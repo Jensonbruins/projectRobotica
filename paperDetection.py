@@ -1,7 +1,7 @@
-import numpy as np
 import cv2
 
-class paperDetection():
+
+class PaperDetection:
     def __init__(self):
         self.frame = 0
 
