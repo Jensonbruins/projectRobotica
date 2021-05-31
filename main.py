@@ -1,5 +1,5 @@
 from wordDetection.image import image
-from PathFolower import instructiemaker, wiel, pad, uarthandeler, kompas
+from PathFolower import instructiemaker, pad, uarthandeler, kompas
 import utilities
 import cv2, time, sys, signal, atexit, math
 
