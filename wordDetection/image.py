@@ -5,9 +5,9 @@ from wordDetection.lineExtractor import lineExtractor
 
 class image():
     def __init__(self):
-        self.paper = paperDetection()
-        self.letter = letterFinder()
-        self.lineAverage = lineExtractor()
+        self.paperDetection = paperDetection()
+        self.letterFinder = letterFinder()
+        self.lineExtractor = lineExtractor()
 
         self.wordArray = [
             ['Den Haag', 'D', 'E', 'N'],
@@ -49,55 +49,55 @@ class image():
         while(True):
             ret, frame = cap.read()
 
-            self.paper.update(frame)
-            cv2.imshow('test', self.paper.get())
+            detectedPaperFrame = self.paperDetection.update(frame)
 
-            self.letter.update(self.paper.get())
+            contourArray = self.letterFinder.update(detectedPaperFrame)
+            # print(contourArray)
+            if contourArray is not None:
+                averageArray = self.lineExtractor.update(contourArray, detectedPaperFrame)
+                print(averageArray)
+                targetArray = []
 
-            self.lineAverage.update(self.letter.get(), self.paper.get())
+                for x in averageArray:
+                    if x[0] == 10:
+                        newAverageArray = averageArray
+                        self.lineExtractor.clean()
+                        for a in newAverageArray:
+                            if a[0] > 5:
+                                horizontalAvg = a[1]/a[0]
+                                verticalAvg = a[2]/a[0]
+                                diagonalAvg = a[3]/a[0]
 
-            targetArray = []
+                                flag = 0
+                                for l in self.letterArray:
+                                    if l[1] <= horizontalAvg <= l[2]:
+                                        if l[3] <= verticalAvg <= l[4]:
+                                            if l[5] <= diagonalAvg <= l[6]:
+                                                flag = 1
+                                                targetArray.append(l[0])
+                                                break
+                                if flag == 0:
+                                    targetArray.append('')
+                        break
 
-            for x in self.lineAverage.get():
-                if x[0] == 10:
-                    newAverageArray = self.lineAverage.get()
-                    self.lineAverage.clean()
-                    for a in newAverageArray:
-                        if a[0] > 5:
-                            horizontalAvg = a[1]/a[0]
-                            verticalAvg = a[2]/a[0]
-                            diagonalAvg = a[3]/a[0]
-
-                            flag = 0
-                            for l in self.letterArray:
-                                if l[1] <= horizontalAvg <= l[2]:
-                                    if l[3] <= verticalAvg <= l[4]:
-                                        if l[5] <= diagonalAvg <= l[6]:
-                                            flag = 1
-                                            targetArray.append(l[0])
-                                            break
-                            if flag == 0:
-                                targetArray.append('')
-                    break
-
-            if len(targetArray) > 0:
-                print(targetArray)
-                for word in self.wordArray:
-                    # print((len(word) - 1), len(targetArray))
-                    if (len(word) - 1) <= len(targetArray):
-                        strike = 0
-                        for targetIndex, targetValue in enumerate(targetArray):
-                            # print('Word: ', word[targetIndex + 1],'Target: ', targetValue)
-                            if word[targetIndex + 1] != targetValue:
-                                strike = strike + 1
-                            if strike > 1:
-                                # print('The word is not:', word[0])
+                if len(targetArray) > 0:
+                    print(targetArray)
+                    for word in self.wordArray:
+                        # print((len(word) - 1), len(targetArray))
+                        if (len(word) - 1) <= len(targetArray):
+                            strike = 0
+                            for targetIndex, targetValue in enumerate(targetArray):
+                                # print('Word: ', word[targetIndex + 1],'Target: ', targetValue)
+                                if word[targetIndex + 1] != targetValue:
+                                    strike = strike + 1
+                                if strike > 1:
+                                    # print('The word is not:', word[0])
+                                    break
+                            if strike < 2:
+                                # print('The word is: ', word[0])
+                                globalWord = word[0]
+                                stopFlag = True
                                 break
-                        if strike < 2:
-                            # print('The word is: ', word[0])
-                            globalWord = word[0]
-                            stopFlag = True
-                            break
 
         #
         # NOTE: Disable properly (20ms wait for better performance)

@@ -1,13 +1,11 @@
 import cv2
+import numpy as np
 
 class letterFinder():
     def __init__(self):
         self.frame = 0
         self.offset = 50
         self.array = []
-
-    def get(self):
-        return self.array
 
     def update(self, frame):
         self.array = []
@@ -41,7 +39,9 @@ class letterFinder():
                             if west < 0:
                                 west = 0
                             self.array.insert(i, [north, east, south, west])
-                            # cv2.rectangle(croppedFrame, (north, west), (south, east), (0, 215, 255), 2)
+                            # cv2.rectangle(croppedFrameThreshold, (north, west), (south, east), (0, 215, 255), 2)
                             i = i + 1
             self.array = self.array[::-1]
-            cv2.imshow('test', croppedFrameThreshold)
+
+            # cv2.imshow('letterFinder', croppedFrameThreshold)
+            return self.array

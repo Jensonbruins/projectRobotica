@@ -7,14 +7,11 @@ class lineExtractor():
         self.averageArray = []
         self.previousLastNumber = 0
 
-    def get(self):
-        return self.averageArray
-
     def clean(self):
         self.averageArray = []
 
-    def update(self,letterArray, detectedPaper):
-        for index, x in enumerate(letterArray):
+    def update(self,contourArray, detectedPaper):
+        for index, x in enumerate(contourArray):
             # edit frames to make letters more clear
             temporaryFrame = detectedPaper[x[3]:x[1], x[0]:x[2]]
             blur = cv2.medianBlur(temporaryFrame, 5)
@@ -57,13 +54,14 @@ class lineExtractor():
                     self.averageArray.insert(index, [0, horizontal, vertical, diagonal])
 
 # DEBUG CODE
-#             cv2.imshow('t' + str(index), temporaryFrame)
+            cv2.imshow('t' + str(index), temporaryFrame)
 #             cv2.imshow('a' + str(index), blur)
 #             cv2.imshow('c' + str(index), cannyFrame)
 #
-#         for x in range(len(letterArray), self.previousLastNumber):
-#             cv2.destroyWindow('t' + str(x))
-#             cv2.destroyWindow('a'+str(x))
-#             cv2.destroyWindow('c'+str(x))
+        for x in range(len(contourArray), self.previousLastNumber):
+            cv2.destroyWindow('t' + str(x))
+            # cv2.destroyWindow('a'+str(x))
+            # cv2.destroyWindow('c'+str(x))
 
-        self.previousLastNumber = len(letterArray)
+        self.previousLastNumber = len(contourArray)
+        return self.averageArray

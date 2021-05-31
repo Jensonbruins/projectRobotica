@@ -5,9 +5,6 @@ class paperDetection():
     def __init__(self):
         self.frame = 0
 
-    def get(self):
-        return self.frame
-
     def update(self, frame):
         ret, firstThreshold = cv2.threshold(frame, 136, 255, cv2.THRESH_TOZERO)
         edged = cv2.cvtColor(firstThreshold, cv2.COLOR_BGR2GRAY)
@@ -34,4 +31,5 @@ class paperDetection():
                     hCoordinates = h
                     break
         self.frame = frame[yCoordinates:yCoordinates + hCoordinates, xCoordinates:xCoordinates + wCoordinates]
-        cv2.imshow('test', self.frame)
+        cv2.imshow('paperDetectionFrame', self.frame)
+        return self.frame
