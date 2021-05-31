@@ -3,7 +3,7 @@ from wordDetection.paperDetection import paperDetection
 from wordDetection.letterFinder import letterFinder
 from wordDetection.lineExtractor import lineExtractor
 from wordDetection.letterConverter import letterConverter
-
+from wordDetection.wordConverter import wordConverter
 
 class image():
     def __init__(self):
@@ -11,11 +11,9 @@ class image():
         self.letterFinder = letterFinder()
         self.lineExtractor = lineExtractor()
         self.letterConverter = letterConverter()
+        self.wordConverter = wordConverter()
 
-        self.wordArray = [
-            ['Den Haag', 'D', 'E', 'N'],
-            ['Alkmaar', 'A', 'L', 'K']
-        ]
+
     def cameraDetection(self,cap):
         stopFlag = False
         globalWord = 0
@@ -28,28 +26,10 @@ class image():
             # print(contourArray)
             if contourArray is not None:
                 averageArray = self.lineExtractor.update(contourArray, detectedPaperFrame)
-                print(averageArray)
+
                 targetArray = self.letterConverter.get(averageArray, self.lineExtractor)
 
-
-                if len(targetArray) > 0:
-                    print(targetArray)
-                    for word in self.wordArray:
-                        # print((len(word) - 1), len(targetArray))
-                        if (len(word) - 1) <= len(targetArray):
-                            strike = 0
-                            for targetIndex, targetValue in enumerate(targetArray):
-                                # print('Word: ', word[targetIndex + 1],'Target: ', targetValue)
-                                if word[targetIndex + 1] != targetValue:
-                                    strike = strike + 1
-                                if strike > 1:
-                                    # print('The word is not:', word[0])
-                                    break
-                            if strike < 2:
-                                # print('The word is: ', word[0])
-                                globalWord = word[0]
-                                stopFlag = True
-                                break
+                stopFlag, globalWord = self.wordConverter.get(targetArray)
 
         #
         # NOTE: Disable properly (20ms wait for better performance)
@@ -58,3 +38,12 @@ class image():
                 break
             if stopFlag:
                 return globalWord
+
+cap = cv2.VideoCapture(0)
+
+if __name__ == '__main__':
+    cameraDetection = image()
+    retval = cameraDetection.cameraDetection(cap)
+    print(retval)
+    cap.release()
+    cv2.destroyAllWindows()
