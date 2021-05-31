@@ -1,7 +1,7 @@
 from wordDetection.image import image
 from PathFolower import instructiemaker, pad, uarthandeler, kompas
 import utilities
-import cv2, time, sys, signal, atexit, math
+import cv2
 
 cap = cv2.VideoCapture(0)
 
