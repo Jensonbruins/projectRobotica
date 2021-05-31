@@ -3,6 +3,7 @@ from wordDetection.paperDetection import paperDetection
 from wordDetection.letterFinder import letterFinder
 from wordDetection.lineExtractor import lineExtractor
 
+
 class image():
     def __init__(self):
         self.paperDetection = paperDetection()

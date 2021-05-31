@@ -1,3 +1,5 @@
+from PathFolower import pad
+import utilities
 import serial, time
 import RPi.GPIO as GPIO
 
@@ -8,10 +10,28 @@ class Uarthandeler:
         GPIO.setup(17, GPIO.IN)
         self.draaicheck = 0
         self.ser = serial.Serial('/dev/ttyS0', baudrate=9600,
-                            parity=serial.PARITY_NONE,
-                            stopbits=serial.STOPBITS_ONE,
-                            bytesize=serial.EIGHTBITS
-                            )
+                                 parity=serial.PARITY_NONE,
+                                 stopbits=serial.STOPBITS_ONE,
+                                 bytesize=serial.EIGHTBITS
+                                 )
+
+    def extra_draai(self, startRichting, instructies, richting):
+        # als er gedraaid moet zijn en de draai is niet volledig draai dan extra
+        wielen = utilities.setup_wielen()
+        extraDraai = pad.Pad()
+        verwachteRichting = startRichting + self.draaicheck
+        if verwachteRichting > 360:
+            verwachteRichting -= 360
+        while self.draaicheck != 0:
+            huidigeRichting = richting.lees_richting()
+            berekendeDraai = verwachteRichting - huidigeRichting
+            if berekendeDraai < -5 or berekendeDraai > 5:
+                extraDraai.set_vector(int(berekendeDraai), 0)
+                instructies.rijinstructies.wielinstructies = []
+                instructies.maak_instructie(wielen, extraDraai.get_vector())
+                self.stuur_instructie(instructies)
+            else:
+                self.draaicheck = 0
 
     def stuur_instructie(self, instructie):
         for rijinstructie in instructie.rijinstructies.wielinstructies:
