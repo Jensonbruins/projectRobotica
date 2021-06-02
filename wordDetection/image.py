@@ -1,9 +1,9 @@
 import cv2
-from paperDetection import paperDetection
-from letterFinder import letterFinder
-from lineExtractor import lineExtractor
-from letterConverter import letterConverter
-from wordConverter import wordConverter
+from wordDetection.paperDetection import paperDetection
+from wordDetection.letterFinder import letterFinder
+from wordDetection.lineExtractor import lineExtractor
+from wordDetection.letterConverter import letterConverter
+from wordDetection.wordConverter import wordConverter
 
 class image():
     def __init__(self):
@@ -39,12 +39,3 @@ class image():
                 break
             if stopFlag:
                 return globalWord
-
-cap = cv2.VideoCapture(0)
-
-if __name__ == '__main__':
-    cameraDetection = image()
-    retval = cameraDetection.cameraDetection(cap)
-    print(retval)
-    cap.release()
-    cv2.destroyAllWindows()
