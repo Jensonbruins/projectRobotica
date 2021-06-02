@@ -19,7 +19,7 @@ class image():
         globalWord = 0
         while(True):
             ret, frame = cap.read()
-            frame = cv2.flip(frame,0)
+            frame = cv2.flip(frame,-1)
             cv2.imshow('test', frame)
             detectedPaperFrame = self.paperDetection.update(frame)
 
