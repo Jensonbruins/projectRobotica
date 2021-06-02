@@ -1,9 +1,9 @@
 import cv2
-from wordDetection.paperDetection import paperDetection
-from wordDetection.letterFinder import letterFinder
-from wordDetection.lineExtractor import lineExtractor
-from wordDetection.letterConverter import letterConverter
-from wordDetection.wordConverter import wordConverter
+from paperDetection import paperDetection
+from letterFinder import letterFinder
+from lineExtractor import lineExtractor
+from letterConverter import letterConverter
+from wordConverter import wordConverter
 
 class image():
     def __init__(self):
@@ -19,7 +19,8 @@ class image():
         globalWord = 0
         while(True):
             ret, frame = cap.read()
-
+            frame = cv2.flip(frame,0)
+            cv2.imshow('test', frame)
             detectedPaperFrame = self.paperDetection.update(frame)
 
             contourArray = self.letterFinder.update(detectedPaperFrame)
