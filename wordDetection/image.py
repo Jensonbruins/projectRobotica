@@ -15,6 +15,7 @@ class image():
 
 
     def cameraDetection(self,cap):
+        timer = 0
         stopFlag = False
         globalWord = 0
         while(True):
@@ -31,11 +32,15 @@ class image():
                 targetArray = self.letterConverter.get(averageArray, self.lineExtractor)
 
                 stopFlag, globalWord = self.wordConverter.get(targetArray)
+            timer += 1
 
         #
         # NOTE: Disable properly (20ms wait for better performance)
         #
+            # print(timer)
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
             if stopFlag:
                 return globalWord
+            if timer >= 150:
+                return False
