@@ -17,7 +17,7 @@ class image():
     def cameraDetection(self,cap):
         timer = 0
         stopFlag = False
-        globalWord = 0
+        globalWord = False
         while(True):
             ret, frame = cap.read()
             frame = cv2.flip(frame,-1)
@@ -40,7 +40,5 @@ class image():
             # print(timer)
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
-            if stopFlag:
+            if stopFlag or timer >= 150:
                 return globalWord
-            if timer >= 150:
-                return False
