@@ -32,7 +32,7 @@ class image():
                 targetArray = self.letterConverter.get(averageArray, self.lineExtractor)
 
                 stopFlag, globalWord = self.wordConverter.get(targetArray)
-            timer += 1
+                #timer += 1
 
         #
         # NOTE: Disable properly (20ms wait for better performance)
