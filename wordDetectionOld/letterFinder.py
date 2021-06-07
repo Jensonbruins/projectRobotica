@@ -1,19 +1,20 @@
 import cv2
-from wordDetection.lineExtractor import lineExtractor
+import numpy as np
 
 class letterFinder():
     def __init__(self):
-        self.lineExtractor = lineExtractor()
+        self.frame = 0
         self.offset = 50
+        self.array = []
 
-    def search(self, frame):
-        word = False
-        array = []
+    def update(self, frame):
+        self.array = []
         ret, croppedFrameThreshold = cv2.threshold(frame, 100, 255,
                                                    cv2.THRESH_BINARY_INV)
         edged = cv2.cvtColor(croppedFrameThreshold, cv2.COLOR_BGR2GRAY)
 
         if frame.size > 100000:
+            array = []
             i = 0
             newContours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             for index, cnt in enumerate(newContours):
@@ -37,13 +38,10 @@ class letterFinder():
                                 south = 0
                             if west < 0:
                                 west = 0
-                            array.insert(i, [north, east, south, west])
-                            cv2.rectangle(croppedFrameThreshold, (north, west), (south, east), (0, 215, 255), 2)
+                            self.array.insert(i, [north, east, south, west])
+                            # cv2.rectangle(croppedFrameThreshold, (north, west), (south, east), (0, 215, 255), 2)
                             i = i + 1
-            array = array[::-1]
+            self.array = self.array[::-1]
 
-            if array is not None:
-                word = self.lineExtractor.extract(array, frame)
-
-            cv2.imshow('letterFinder', croppedFrameThreshold)
-            return word
+            # cv2.imshow('letterFinder', croppedFrameThreshold)
+            return self.array

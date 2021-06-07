@@ -1,12 +1,11 @@
+import numpy as np
 import cv2
-from wordDetection.letterFinder import letterFinder
 
 class paperDetection():
     def __init__(self):
-        self.letterFinder = letterFinder()
+        self.frame = 0
 
-    def detect(self, frame):
-        word = False
+    def update(self, frame):
         ret, firstThreshold = cv2.threshold(frame, 136, 255, cv2.THRESH_TOZERO)
         edged = cv2.cvtColor(firstThreshold, cv2.COLOR_BGR2GRAY)
         ret, secondThreshold = cv2.threshold(edged, 235, 255, cv2.THRESH_TOZERO_INV)
@@ -31,10 +30,6 @@ class paperDetection():
                     wCoordinates = w
                     hCoordinates = h
                     break
-        croppedFrame = frame[yCoordinates:yCoordinates + hCoordinates, xCoordinates:xCoordinates + wCoordinates]
-        height, width, channels = croppedFrame.shape
-
-        if height > 1:
-            word = self.letterFinder.search(croppedFrame)
-        # cv2.imshow('paperDetectionFrame', self.frame)
-        return word
+        self.frame = frame[yCoordinates:yCoordinates + hCoordinates, xCoordinates:xCoordinates + wCoordinates]
+        cv2.imshow('paperDetectionFrame', self.frame)
+        return self.frame

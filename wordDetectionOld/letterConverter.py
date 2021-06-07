@@ -1,8 +1,8 @@
-from wordDetection.wordConverter import wordConverter
+import cv2
+import numpy as np
 
 class letterConverter():
     def __init__(self):
-        self.wordConverter = wordConverter()
         self.letterArray = [
             #   ['letter', horizontalMin, horizontalMax, verticalMin, verticalMax, diagonalMin, diagonalMax]
             ['A', 1, 2, 0, 0.2, 7.5, 9.1],
@@ -33,24 +33,28 @@ class letterConverter():
             # ['Z', 0, 0, 0, 0, 0, 0],
         ]
 
-    def convert(self, averageArray):
+    def get(self, averageArray, lineExtractor):
         targetArray = []
-        for a in averageArray:
-            if a[0] > 5:
-                horizontalAvg = a[1] / a[0]
-                verticalAvg = a[2] / a[0]
-                diagonalAvg = a[3] / a[0]
+        for x in averageArray:
+            if x[0] == 10:
+                newAverageArray = averageArray
+                lineExtractor.clean()
+                for a in newAverageArray:
+                    if a[0] > 5:
+                        horizontalAvg = a[1] / a[0]
+                        verticalAvg = a[2] / a[0]
+                        diagonalAvg = a[3] / a[0]
 
-                flag = 0
-                for l in self.letterArray:
-                    if l[1] <= horizontalAvg <= l[2]:
-                        if l[3] <= verticalAvg <= l[4]:
-                            if l[5] <= diagonalAvg <= l[6]:
-                                flag = 1
-                                targetArray.append(l[0])
-                                break
-                if flag == 0:
-                    targetArray.append('')
+                        flag = 0
+                        for l in self.letterArray:
+                            if l[1] <= horizontalAvg <= l[2]:
+                                if l[3] <= verticalAvg <= l[4]:
+                                    if l[5] <= diagonalAvg <= l[6]:
+                                        flag = 1
+                                        targetArray.append(l[0])
+                                        break
+                        if flag == 0:
+                            targetArray.append('')
+                break
 
-        return self.wordConverter.convert(targetArray)
-        # print(targetArray)
+        return targetArray

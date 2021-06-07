@@ -1,22 +1,19 @@
 import cv2
-import math
 import numpy as np
-from wordDetection.letterConverter import letterConverter
+import math
 
 class lineExtractor():
     def __init__(self):
-        self.letterConverter = letterConverter()
         self.averageArray = []
         self.previousLastNumber = 0
 
-    def clear(self):
+    def clean(self):
         self.averageArray = []
 
-    def extract(self, letterPositionArray, paperFrame):
-        word = False
-        for index, x in enumerate(letterPositionArray):
+    def update(self,contourArray, detectedPaper):
+        for index, x in enumerate(contourArray):
             # edit frames to make letters more clear
-            temporaryFrame = paperFrame[x[3]:x[1], x[0]:x[2]]
+            temporaryFrame = detectedPaper[x[3]:x[1], x[0]:x[2]]
             blur = cv2.medianBlur(temporaryFrame, 5)
             # blur = cv2.bilateralFilter(temporaryFrame,5,75,75)
             cannyFrame = cv2.Canny(blur, 200, 255)
@@ -51,27 +48,20 @@ class lineExtractor():
                     oldVertical = self.averageArray[index][2]
                     oldDiagonal = self.averageArray[index][3]
                     self.averageArray.pop(index)
-                    self.averageArray.insert(index,
-                                             [(oldIndex + 1), (oldHorizontal + horizontal), (oldVertical + vertical),
-                                              (oldDiagonal + diagonal)])
+                    self.averageArray.insert(index, [(oldIndex + 1), (oldHorizontal + horizontal), (oldVertical + vertical),
+                                                (oldDiagonal + diagonal)])
                 else:
                     self.averageArray.insert(index, [0, horizontal, vertical, diagonal])
 
-        for x in self.averageArray:
-            if x[0] >= 10:
-                word = self.letterConverter.convert(self.averageArray)
-                self.clear()
-                break
+# DEBUG CODE
+#             cv2.imshow('t' + str(index), temporaryFrame)
+#             cv2.imshow('a' + str(index), blur)
+#             cv2.imshow('c' + str(index), cannyFrame)
+#
+        # for x in range(len(contourArray), self.previousLastNumber):
+            # cv2.destroyWindow('t' + str(x))
+            # cv2.destroyWindow('a'+str(x))
+            # cv2.destroyWindow('c'+str(x))
 
-        # DEBUG CODE
-        #     cv2.imshow('t' + str(index), temporaryFrame)
-        #             cv2.imshow('a' + str(index), blur)
-        #             cv2.imshow('c' + str(index), cannyFrame)
-        #
-        # for x in range(len(letterPositionArray), self.previousLastNumber):
-        #     cv2.destroyWindow('t' + str(x))
-        # cv2.destroyWindow('a'+str(x))
-        # cv2.destroyWindow('c'+str(x))
-
-        self.previousLastNumber = len(letterPositionArray)
-        return word
+        self.previousLastNumber = len(contourArray)
+        return self.averageArray
