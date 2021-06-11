@@ -17,7 +17,7 @@ class Wiel:
         self.afstandWiel = [None, None]
 
     def set_wiel(self, wielPlaatsing):
-        self.radius = 2.99
+        self.radius = 2.795 #2.99
         self.volstap = 2052
         self.identificatie = wielPlaatsing
         self.afstandWiel = [4.05, 6.05]
