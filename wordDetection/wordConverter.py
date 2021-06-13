@@ -2,7 +2,8 @@ class wordConverter():
     def __init__(self):
         self.wordArray = [
             ['Den Haag', 'D', 'E', 'N'],
-            ['Alkmaar', 'A', 'L', 'K']
+            ['Alkmaar', 'A', 'L', 'K'],
+            ['Haarlem', 'H','L','M']
         ]
 
     def convert(self, targetArray):

@@ -12,12 +12,12 @@ class letterConverter():
             ['E', 5.5, 7.5, 1.5, 3.5, 0, 0.5],
             # ['F', 0, 0, 0, 0, 0, 0],
             # ['G', 0, 0, 0, 0, 0, 0],
-            # ['H', 0, 0, 0, 0, 0, 0],
+            ['H', 1.5, 2.5, 5.5, 7, 0, 0.5],
             # ['I', 0, 0, 0, 0, 0, 0],
             # ['J', 0, 0, 0, 0, 0, 0],
             # ['K', 0, 0, 0, 0, 0, 0],
-            # ['L', 0, 0, 0, 0, 0, 0],
-            # ['M', 0, 0, 0, 0, 0, 0],
+            ['L', 2, 3, 2, 3, 0, 0.5],
+            ['M', 0.5, 1.5, 4, 5.5, 7, 8.5],
             ['N', 0, 0.5, 4, 6.5, 4, 5.5],
             # ['O', 0, 0, 0, 0, 0, 0],
             # ['P', 0, 0, 0, 0, 0, 0],
@@ -40,7 +40,7 @@ class letterConverter():
                 horizontalAvg = a[1] / a[0]
                 verticalAvg = a[2] / a[0]
                 diagonalAvg = a[3] / a[0]
-
+                print(horizontalAvg,verticalAvg,diagonalAvg)
                 flag = 0
                 for l in self.letterArray:
                     if l[1] <= horizontalAvg <= l[2]:
