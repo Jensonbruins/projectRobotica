@@ -57,6 +57,7 @@ class lineExtractor():
                 else:
                     self.averageArray.insert(index, [0, horizontal, vertical, diagonal])
 
+            cv2.imshow('t' + str(index), temporaryFrame)
         for x in self.averageArray:
             if x[0] >= 10:
                 word = self.letterConverter.convert(self.averageArray)
@@ -64,12 +65,12 @@ class lineExtractor():
                 break
 
         # DEBUG CODE
-        #     cv2.imshow('t' + str(index), temporaryFrame)
+            #cv2.imshow('t' + str(index), temporaryFrame)
         #             cv2.imshow('a' + str(index), blur)
         #             cv2.imshow('c' + str(index), cannyFrame)
         #
-        # for x in range(len(letterPositionArray), self.previousLastNumber):
-        #     cv2.destroyWindow('t' + str(x))
+        for x in range(len(letterPositionArray), self.previousLastNumber):
+            cv2.destroyWindow('t' + str(x))
         # cv2.destroyWindow('a'+str(x))
         # cv2.destroyWindow('c'+str(x))
 

@@ -23,7 +23,7 @@ class paperDetection():
             x, y, w, h = cv2.boundingRect(cnt)
             if w > 100 and h > 100:
                 size = cv2.contourArea(cnt)
-                if size > 100000:
+                if size > 55000:
                     # Debug purposes
                     # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 215, 255), 2)
                     xCoordinates = x
@@ -36,5 +36,5 @@ class paperDetection():
 
         if height > 1:
             word = self.letterFinder.search(croppedFrame)
-        # cv2.imshow('paperDetectionFrame', self.frame)
+        # cv2.imshow('paperDetectionFrame', frame)
         return word

@@ -10,9 +10,8 @@ class image():
         word = False
         while (True):
             ret, frame = cap.read()
-            # frame = cv2.flip(frame, -1)
+            frame = cv2.flip(frame, -1)
             word = self.paperDetection.detect(frame)
-            print(word)
             if cv2.waitKey(5) & 0xFF == ord('q'):
                 break
             if word is not False or timer >= 150:
