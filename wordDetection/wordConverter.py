@@ -8,7 +8,6 @@ class wordConverter():
 
     def convert(self, targetArray):
         if len(targetArray) > 0:
-            print(targetArray)
             for word in self.wordArray:
                 if (len(word) - 1) <= len(targetArray):
                     strike = 0

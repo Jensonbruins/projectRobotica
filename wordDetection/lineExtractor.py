@@ -35,10 +35,10 @@ class lineExtractor():
                     x1, y1, x2, y2 = line[0]
                     angle = math.atan2(y1 - y2, x1 - x2)
                     angle = angle * 180 / math.pi
-                    if 85 < angle < 95:
+                    if 82 < angle < 97:
                         vertical = vertical + 1
                         cv2.line(temporaryFrame, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                    elif 175 < angle < 185:
+                    elif 172 < angle < 187:
                         horizontal = horizontal + 1
                         cv2.line(temporaryFrame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                     elif 100 < angle < 170 or -100 > angle > -170:

@@ -35,10 +35,10 @@ class Uarthandeler:
 
     def stuur_instructie(self, instructie):
         for rijinstructie in instructie.rijinstructies.wielinstructies:
-            time.sleep(0.2)
+            #time.sleep(0.2)
             # een wacht tot de vorige actie klaar is als de functie te vroeg aangesproken wordt
-            while GPIO.input(17):
-                niks = False
+            #while GPIO.input(17):
+            #    niks = False
             # stuur de vier instructies naar de vier wielen en geef ze het start signaal
             for wielinstructie in rijinstructie:
                 if wielinstructie.draai != 0:

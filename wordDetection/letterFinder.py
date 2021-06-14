@@ -24,10 +24,11 @@ class letterFinder():
                     if w > 22 and w < 100 and h > 25 and h < 100:
                         size = cv2.contourArea(cnt)
                         if size < 3000:
-                            north = x - 5
-                            east = (y + h) + 5
-                            south = (x + w) + 5
-                            west = y - 5
+                            offset = 2
+                            north = x - offset
+                            east = (y + h) + offset
+                            south = (x + w) + offset
+                            west = y - offset
                             if north < 0:
                                 north = 0
                             if east < 0:
